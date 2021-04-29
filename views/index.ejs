@@ -1,0 +1,88 @@
+
+<style>
+    #form {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem;
+}
+
+#input {
+    background: #eeeeee;
+    width: 85%; height: 4rem;
+    padding: 2rem;
+    border-radius: 10px;
+    color: #42424242;
+}
+
+#from button {
+    background: #45fce4;
+    color: #fff;
+    border-radius: 10px;
+}
+
+#messages {
+    list-style-type: none;
+}
+
+#messages li {
+    display: flex;
+}
+
+#messages li.right {
+    justify-content: flex-end;
+}
+
+#messages li span {
+    background-color: #eeeeee;
+    color: #424242;
+    width: fit-content;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border-radius: 10px;
+    border-bottom-left-radius: 0;
+}
+
+#messages li.right span {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius:0;
+}
+</style>
+<ul id="messages"></ul>
+
+<form id="form" action="">
+    <input id="input" autocomplete="off" placeholder="Write Something">
+    <button>Send</button>
+</form>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    const messages = document.getElementById('messages');
+    const form = document.getElementById('form');
+    const input = document.getElementById('input');
+    const userID = Date.now();
+
+    form.addEventListener('submit', ( e ) =>{
+        e.preventDefault();
+        if(input.value) {
+            socket.emit('chat message', {
+                msg: input.value,
+                user: userID
+            })
+            input.value = ''
+        }
+    })
+
+    socket.on('chat message', function (msgObject) {
+        const message = document.createElement('li');
+        const messageItem = document.createElement('span');
+        messageItem.textContent = msgObject.msg + ` ${msgObject.user}`;
+        if(msgObject.user === userID) {
+            message.classList.add('right')
+        }
+        message.appendChild(messageItem);
+        messages.appendChild(message);
+    })
+</script>
+
