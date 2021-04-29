@@ -57,11 +57,12 @@
 </form>
 <script src="/socket.io/socket.io.js"></script>
 <script>
+    var userName = prompt("Please enter your name");
     const socket = io();
     const messages = document.getElementById('messages');
     const form = document.getElementById('form');
     const input = document.getElementById('input');
-    const userID = Date.now();
+    const userID = userName;
 
     form.addEventListener('submit', ( e ) =>{
         e.preventDefault();

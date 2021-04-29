@@ -2,7 +2,7 @@ const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
 const path = require('path');
-
+const fs = require('fs');
 
 const app = express();
 const server = http.createServer(app);
@@ -22,7 +22,14 @@ app.get('/', (req, res) => {
 io.on('connect', socket => {
   console.log('User Connected')
 
+  
+
   socket.on('chat message', msg => {
+    let usermsg = `${msg['msg']} Sender: ${msg['user']} \r\n`;
+    fs.appendFile('./.data/chat.txt', usermsg, function (err) {
+      if (err) throw err;
+      console.log('Saved!');
+    });
     io.emit('chat message', msg)
   })
 
